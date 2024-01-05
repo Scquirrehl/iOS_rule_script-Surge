@@ -1,0 +1,710 @@
+#============UserScript=============#
+# 填写订阅链接用于获取机场流量信息并在主页显示
+subscribe-url:
+# 模式设置：rule（规则） / global（全局代理）/ direct（全局直连）
+mode: rule
+# 设置日志输出级别
+log-level: info
+# 允许局域网
+allow-lan: true
+# 监听IP白名单，可绑定单个IPv4和v6地址，"*" 为绑定所有IP地址，仅在将allow-lan设置为true时适用
+# bind-address: "*"
+# 混合端口，HTTP和SOCKS5用一个端口
+# mixed-port: 7890                   
+# 外部控制器监听地址，可以使用 RESTful API 来控制你的 clash 内核
+# external-controller: 127.0.0.1:9090
+# IPV6解析(开启 true|关闭 false)
+ipv6: false
+#===================================#
+# DNS 服务器配置
+dns:
+  # 关闭将使用系统 DNS
+  enable: true
+  # IPV6解析开关；如果为false，将返回ipv6结果为空
+  ipv6: false
+  # 模式：redir-host或fake-ip
+  enhanced-mode: fake-ip
+  # DNS 监听地址
+  listen: 0.0.0.0:1053
+  # 解析非IP的dns用的dns服务器，只支持纯IP
+  default-nameserver:
+    - 114.114.114.114
+    - 202.141.176.93
+    - 202.141.178.13
+    - 117.50.10.10
+    - 223.5.5.5
+    - 119.29.29.29
+    - 119.28.28.28
+    - 8.8.8.8
+    - system
+  # 解析地址池
+  fake-ip-range: 198.18.0.1/16
+  # 过滤列表中的域名返回真实IP
+  fake-ip-filter:
+    - '+.lan'
+    - '+.stun.*.*'
+    - '+.stun.*.*.*'
+    - '+.stun.*.*.*.*'
+    - '+.stun.*.*.*.*.*'
+    - 'lens.l.google.com'
+    - '*.n.n.srv.nintendo.net'
+    - '+.srv.nintendo.net'
+    - '+.stun.playstation.net'
+    - '+.xboxlive.com'
+    - 'xbox.*.*.microsoft.com'
+    - '*.*.xboxlive.com'
+    - '*.msftncsi.com'
+    - '*.msftconnecttest.com'
+    - '*.mcdn.bilivideo.cn'
+    - 'localhost.ptlogin2.qq.com'
+    - '*.battlenet.com.cn'
+    - '*.battlenet.com'
+    - '*.blzstatic.cn'
+    - '*.battle.net'
+  fallback:
+    - https://1.1.1.1/dns-query
+    - https://dns.google/dns-query
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+  # DNS服务器
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+  # 跳过证书验证，解决部分兼容性问题
+  skip-cert-verify: true
+#===================================#
+# 远程订阅相关
+p: &p {type: http, interval: 172800, health-check: {enable: true}}
+# 远程代理集
+proxy-providers:
+  # 1.请使用Clash类型订阅链接填入引号url:""内使用
+  # 2.或可使用通用订阅链接通过Sub-Store进行订阅转换(用于Stash)
+  Subscribe: {!!merge <<: *p, url: "https://sqsh9.no-mad-world.club/link/AwuCrsEwFGnsGWLw?clash=3&extend=1", interval: 172800}
+  网易云节点: {!!merge <<: *p, url: "https://raw.githubusercontent.com/I-am-R-E/Functional-Store-Hub/Master/NeteaseMusic/AgentNode/Stash.yaml"}
+#===================================#
+# 策略组
+proxy-groups:
+  # 全部节点
+  - filter: "^((?!(网易|网易云|网易云音乐|音乐|云音乐|官网|流量|加群|订阅|获取|刷新|鸡场|机场|订购|购买|套餐|重置|分享|网址|邀请|公众号|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/chxm1023/Script_X/main/icon/stash1.png
+    include-all: true
+    name: 全部节点
+    proxies: []
+    type: select
+  # 策略选择
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Back.png
+    name: 策略选择
+    proxies:
+      - 延迟最低
+      - 全部节点
+      - 负载均衡
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+    type: select
+  # Emby
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Emby.png
+    name: Emby
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+      - 直连模式
+    type: select
+  # TikTok
+  - icon: https://raw.githubusercontent.com/chxm1023/Script_X/main/icon/TikTok_1.png
+    name: TikTok
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Github
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/GitHub.png
+    name: Github
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Google
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png
+    name: Google
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Spotify
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Spotify.png
+    name: Spotify
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Twitter
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Twitter.png
+    name: Twitter
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Netflix
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netflix_Letter.png
+    name: Netflix
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Disney
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Disney+.png
+    name: Disney+
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # YouTube
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
+    name: YouTube
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # ChatGPT
+  - icon: https://raw.githubusercontent.com/chxm1023/Script_X/main/icon/ChatGPT/ChatGPT4.png
+    name: ChatGPT
+    proxies:
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Telegram
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png
+    name: Telegram
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Instagram
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Instagram.png
+    name: Instagram
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # Facebook
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Facebook.png
+    name: Facebook
+    proxies:
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+      - 策略选择
+    type: select
+  # 网易云音乐
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netease_Music_Unlock.png
+    name: 网易云音乐
+    proxies:
+      - 直连模式
+      - 网易云节点
+    type: select
+  # 网易云节点
+  - filter: "(?i)(网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|music|🎵|🎶|🎧)"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Netease_Music.png
+    include-all: true
+    name: 网易云节点
+    proxies: []
+    type: select
+  # 微软服务
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Microsoft.png
+    name: 微软服务
+    proxies:
+      - 直连模式
+      - 策略选择
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+    type: select
+  # 苹果服务
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png
+    name: 苹果服务
+    proxies:
+      - 直连模式
+      - 策略选择
+    type: select
+  # 系统更新
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple_Update.png
+    name: 系统更新
+    proxies:
+      - 拦截模式
+      - 直连模式
+    type: select
+  # 全球加速
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Global.png
+    name: 全球加速
+    proxies:
+      - 策略选择
+      - 直连模式
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 全部节点
+    type: select
+  # 国际代理
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Airport.png
+    name: 国际代理
+    proxies:
+      - 策略选择
+      - 香港节点
+      - 台湾节点
+      - 日本节点
+      - 韩国节点
+      - 狮城节点
+      - 美国节点
+      - 直连模式
+    type: select
+  # 延迟最低
+  - filter: "^((?!(网易|网易云|网易云音乐|音乐|云音乐|官网|流量|加群|订阅|获取|刷新|鸡场|机场|订购|购买|套餐|重置|分享|网址|邀请|公众号|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Download.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 延迟最低
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 负载均衡
+  - filter: "(?=.*((?i)🇭🇰|香|港|香港|香江|香岛|湾仔|港仔|九龙|铜锣湾|旺角|HK|Hong|HongKong))^((?!(台|日|韩|新|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/SSID.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 负载均衡
+    proxies: []
+    tolerance: 50
+    type: load-balance
+    url: http://cp.cloudflare.com/generate_204
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png
+    name: 直连模式
+    proxies:
+      - DIRECT
+      - 策略选择
+    type: select
+  # 拦截模式
+  - icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Reject.png
+    name: 拦截模式
+    proxies:
+      - REJECT
+    type: select
+  # 香港节点
+  - filter: "(?=.*((?i)🇭🇰|香|港|香港|香江|香岛|湾仔|港仔|九龙|铜锣湾|旺角|HK|Hong|HongKong))^((?!(台|日|韩|新|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Hong_Kong.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 香港节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 台湾节点
+  - filter: "(?=.*((?i)🇨🇳|台|台湾|台北|新北|桃园|台中|台南|高雄|基隆|新竹|嘉义|苗栗|彰化|南投|云林|屏东|台东|花莲|宜兰|澎湖|金门|连江|TW|Taiwan))^((?!(港|日|韩|新|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/China.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 台湾节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 日本节点
+  - filter: "(?=.*((?i)🇯🇵|日|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan|名古屋|福冈|仙台|京都|Japan))^((?!(港|台|韩|新|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Japan.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 日本节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 韩国节点
+  - filter: "(?=.*((?i)🇰🇷|韩|韩国|南韩|南朝鲜|高丽|大韩民国|首尔|世宗|济州市|水原|釜山|大邱|仁川|光州|大田|蔚山|KR|Korea|Korean|South Korea))^((?!(港|台|日|新|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Korea.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 韩国节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 新加坡节点
+  - filter: "(?=.*((?i)🇸🇬|新|狮|獅|坡|新加坡|星|星加坡|星洲|狮城|SG|Singapore))^((?!(港|台|日|韩|美|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Singapore.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 狮城节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+  # 美国节点
+  - filter: "(?=.*((?i)🇺🇸|美|美国|美利坚合众国|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|华盛顿|内华达|蒙大纳|怀俄明州|菲尼克斯|阿尔伯克基|丹佛|US|United States|States|American))^((?!(港|台|日|韩|新|英|平|邀|群|刷新|网|网易|网易云|网易云音乐|音乐|云音乐|Netease|Music|𝐌𝐮𝐬𝐢𝐜|Unbolck|Update|music|🎵|🎶|🎧)).)*$"
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/United_States.png
+    include-all: true
+    interval: 600
+    lazy: true
+    name: 美国节点
+    proxies: []
+    tolerance: 50
+    type: url-test
+    url: http://cp.cloudflare.com/generate_204
+#===================================#
+# 远程规则集
+rule-providers:
+  Anti-AD:
+    behavior: domain-text
+    interval: 172800
+    url: https://anti-ad.net/surge.txt
+  AdRule-rule:
+    behavior: domain-text
+    interval: 172800
+    url: https://raw.githubusercontent.com/NobyDa/Script/master/Surge/AdRule.list
+  Hijacking-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Hijacking/Hijacking.yaml
+  Emby-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Emby/Emby.yaml
+  TikTok-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TikTok/TikTok.yaml
+  Github-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml
+  Google-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
+  Spotify-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Spotify/Spotify.yaml
+  Twitter-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Twitter/Twitter.yaml
+  Netflix-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Netflix/Netflix.yaml
+  Disney-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Disney/Disney.yaml
+  YouTube-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml
+  ChatGPT-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml
+  Telegram-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml
+  Instagram-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Instagram/Instagram.yaml
+  Facebook-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Facebook/Facebook.yaml
+  NetEaseMusic-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/NetEaseMusic/NetEaseMusic.yaml
+  Microsoft-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml
+  Apple-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml
+  Apple_Domain:
+    behavior: domain
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple_Domain.yaml
+  China:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.yaml
+  ChinaIPs:
+    behavior: ipcidr
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml
+  Lan-rule:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Lan/Lan.yaml
+  ChinaCompanyIp:
+    behavior: domain-text
+    interval: 172800
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list
+  ChinaDomain:
+    behavior: domain-text
+    interval: 172800
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
+  ChinaMedia:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.yaml
+  ProxyMedia:
+    behavior: domain-text
+    interval: 172800
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyMedia.list
+  Streaming:
+    behavior: domain-text
+    interval: 172800
+    url: https://raw.githubusercontent.com/DivineEngine/Profiles/master/Surge/Ruleset/StreamingMedia/Streaming.list
+  #全球加速
+  Global:
+    behavior: classical
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global.yaml
+  Global_Domain:
+    behavior: domain
+    interval: 172800
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Global/Global_Domain.yaml
+#===================================#
+# 规则集
+rules:
+  # AD处理
+  - DOMAIN-KEYWORD,pangolin,拦截模式
+  - DOMAIN-KEYWORD,pglstatp,拦截模式
+  - DOMAIN-KEYWORD,adview,拦截模式
+  - DOMAIN-SUFFIX,gdt.qq.com,拦截模式
+  # 网易云音乐广告拦截
+  - DOMAIN,admusicpic.music.126.net,拦截模式
+  - DOMAIN,iadmat.nosdn.127.net,拦截模式
+  - DOMAIN,iadmusicmat.music.126.net,拦截模式
+  - DOMAIN,iadmusicmatvideo.music.126.net,拦截模式
+  # 掌上公交去广告
+  - DOMAIN,quanguo.mygolbs.com,拦截模式
+  - DOMAIN,cpu-openapi.baidu.com,拦截模式
+  # HDOBOX影视App去广告
+  - DOMAIN-SUFFIX,applovin.com,拦截模式
+  - DOMAIN-SUFFIX,applvn.com,拦截模式
+  # Anti-AD
+  - RULE-SET,Anti-AD,拦截模式
+  # Advertising
+  - DOMAIN-KEYWORD,adservice,拦截模式
+  # 拦截广告
+  - RULE-SET,AdRule-rule,拦截模式
+  # 运营劫持
+  - RULE-SET,Hijacking-rule,拦截模式
+  # Emby
+  - RULE-SET,Emby-rule,Emby
+  - GEOSITE,emby,Emby
+  - DOMAIN-KEYWORD,emby,Emby
+  # TikTok
+  - RULE-SET,TikTok-rule,TikTok
+  - GEOSITE,tiktok,TikTok
+  - DOMAIN-KEYWORD,tiktok,TikTok
+  # Github
+  - RULE-SET,Github-rule,Github
+  - GEOSITE,github,Github
+  - DOMAIN-KEYWORD,github,Github
+  # YouTube
+  - RULE-SET,YouTube-rule,YouTube
+  - GEOSITE,youtube,YouTube
+  - DOMAIN-KEYWORD,youtube,YouTube
+  # YouTube Music
+  - DOMAIN,music.youtube.com,YouTube
+  # Google
+  - RULE-SET,Google-rule,Google
+  - GEOSITE,google,Google
+  - DOMAIN-KEYWORD,google,Google
+  # Spotify
+  - RULE-SET,Spotify-rule,Spotify
+  - GEOSITE,spotify,Spotify
+  - DOMAIN-KEYWORD,Spotify,Spotify
+  # Twitter
+  - RULE-SET,Twitter-rule,Twitter
+  - GEOSITE,twitter,Twitter
+  - DOMAIN-KEYWORD,twitter,Twitter
+  # Netflix
+  - RULE-SET,Netflix-rule,Netflix
+  - GEOSITE,netflix,Netflix
+  - DOMAIN-KEYWORD,netflix,Netflix
+  # Disney
+  - RULE-SET,Disney-rule,Disney
+  - GEOSITE,disney,Disney
+  - DOMAIN-KEYWORD,disney,Disney
+  # ChatGPT
+  - RULE-SET,ChatGPT-rule,ChatGPT
+  - GEOSITE,openai,ChatGPT
+  - DOMAIN-KEYWORD,openai,ChatGPT
+  - DOMAIN-SUFFIX,poe.com,ChatGPT
+  - DOMAIN-SUFFIX,openai.com,ChatGPT
+  # Telegram
+  - RULE-SET,Telegram-rule,Telegram
+  - GEOSITE,telegram,Telegram
+  - DOMAIN-KEYWORD,telegram,Telegram
+  # Instagram
+  - RULE-SET,Instagram-rule,Instagram
+  - GEOSITE,instagram,Instagram
+  - DOMAIN-KEYWORD,instagram,Instagram
+  # Facebook
+  - RULE-SET,Facebook-rule,Facebook
+  - GEOSITE,Facebook,Facebook
+  - DOMAIN-KEYWORD,Facebook,Facebook
+  # 网易云音乐
+  - RULE-SET,NetEaseMusic-rule,网易云音乐
+  # Microsoft微软服务
+  - RULE-SET,Microsoft-rule,微软服务
+  - GEOSITE,microsoft,微软服务
+  - DOMAIN-KEYWORD,microsoft,微软服务
+  # 系统更新
+  - DOMAIN,appstoreconnect.apple.com,系统更新
+  - DOMAIN,iosapps-ssl.itunes.apple.com, 系统更新
+  - DOMAIN,itcmobile.itunes.apple.com,系统更新
+  - DOMAIN,mesu.apple.com,系统更新
+  - DOMAIN,gdmf.apple.com,系统更新
+  - DOMAIN,updates-http.cdn-apple.com,系统更新
+  - DOMAIN,xp.apple.com,系统更新
+  # 苹果服务
+  - RULE-SET,Apple-rule,苹果服务
+  - RULE-SET,Apple_Domain,苹果服务
+  - DOMAIN,apps.apple.com,苹果服务
+  - DOMAIN,itunes.apple.com,苹果服务
+  - DOMAIN,beta.apple.com,苹果服务
+  - DOMAIN,testflight.apple.com,苹果服务
+  - DOMAIN-KEYWORD,apple,苹果服务
+  - DOMAIN-KEYWORD,testflight,苹果服务
+  - DOMAIN-KEYWORD,icloud,苹果服务
+  - GEOSITE,apple,苹果服务
+  # China
+  - RULE-SET,China,直连模式
+  # ChinaIPs
+  - RULE-SET,ChinaIPs,直连模式
+  # China公司
+  - RULE-SET,ChinaCompanyIp,直连模式
+  # 局域网地址
+  - RULE-SET,Lan-rule,直连模式
+  - GEOSITE,LAN,直连模式
+  # China域名
+  - RULE-SET,ChinaDomain,直连模式
+  # ChinaMedia
+  - RULE-SET,ChinaMedia,直连模式
+  # 搜狗
+  - DOMAIN-KEYWORD,sogou,直连模式
+  # 京东
+  - DOMAIN-SUFFIX,jd.com,直连模式
+  # 美团
+  - DOMAIN-KEYWORD,meituan,直连模式
+  # 百度
+  - DOMAIN-KEYWORD, baidu, 直连模式
+  # 国际代理
+  - GEOSITE,steam@cn,直连模式
+  - DOMAIN-KEYWORD,steam,国际代理
+  - DOMAIN-KEYWORD,xbox,国际代理
+  - RULE-SET,ProxyMedia,国际代理
+  - RULE-SET,Streaming,国际代理
+  # 全球加速
+  - RULE-SET,Global,全球加速
+  - RULE-SET,Global_Domain,全球加速
+  # GeoIP China，直连
+  - GEOIP,CN,直连模式
+  # 不在上述规则中(远程以及本地)的剩余请求，将走MATCH 指定的节点/策略，这里即是 → 全球加速, 请根据自己的需求来选择直连或节点、策略
+  - MATCH,全球加速
